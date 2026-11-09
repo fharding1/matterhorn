@@ -17,6 +17,7 @@ In either case, first follow these steps:
 4. Add `~/.ghcup/bin` to your `PATH`. You may also need to run `ghcup set ghc [version]`
 (e.g. `ghcup set ghc 9.10`) for the build script to function correctly.
 5. Run `cabal new-update`
+6. If you are a Mac user, you may need to run `ln -s ~/.config/cabal ~/.cabal` for `cabal-plan` to function correctly.
 
 Setting Up
 ==========
