@@ -37,47 +37,46 @@
 
 set -e
 
-HERE=$(cd `dirname $0`; pwd)
+HERE=$(
+  cd $(dirname $0)
+  pwd
+)
 ROOT=$HERE/..
 
 function get_platform {
-    if [ -f "/etc/os-release" ]
-    then
-        # Use ID from /etc/os-release because it is a valid
-        # single-word element, whereas NAME may contain spaces.
-        . /etc/os-release
-        echo $ID
-    else
-        uname -s
-    fi
+  if [ -f "/etc/os-release" ]; then
+    # Use ID from /etc/os-release because it is a valid
+    # single-word element, whereas NAME may contain spaces.
+    . /etc/os-release
+    echo $ID
+  else
+    uname -s
+  fi
 }
 
 function get_arch {
-    uname -m
+  uname -m
 }
 
 function output_dirname {
-    if [ -f /etc/os-release ]
-    then
-        # sets vars, incl VERSION_ID and potentially VERSION_CODENAME
-        . /etc/os-release
+  if [ -f /etc/os-release ]; then
+    # sets vars, incl VERSION_ID and potentially VERSION_CODENAME
+    . /etc/os-release
 
-        # Sometimes this one isn't set, so we only want to put a "-" in
-        # the directory name if it actually is.
-        if ! [ -z "$VERSION_CODENAME" ]
-        then
-            VERSION_CODENAME="-$VERSION_CODENAME"
-        fi
-
-        if ! [ -z "$VERSION_ID" ]
-        then
-            VERSION_ID="-$VERSION_ID"
-        fi
-
-        echo $BASENAME-$MHVERSION-$PLATFORM${VERSION_ID}${VERSION_CODENAME}-$ARCH
-    else
-        echo $BASENAME-$MHVERSION-$PLATFORM-$ARCH
+    # Sometimes this one isn't set, so we only want to put a "-" in
+    # the directory name if it actually is.
+    if ! [ -z "$VERSION_CODENAME" ]; then
+      VERSION_CODENAME="-$VERSION_CODENAME"
     fi
+
+    if ! [ -z "$VERSION_ID" ]; then
+      VERSION_ID="-$VERSION_ID"
+    fi
+
+    echo $BASENAME-$MHVERSION-$PLATFORM${VERSION_ID}${VERSION_CODENAME}-$ARCH
+  else
+    echo $BASENAME-$MHVERSION-$PLATFORM-$ARCH
+  fi
 }
 
 MHVERSION=$(grep "^version:" matterhorn.cabal | awk '{ print $2 }')
@@ -91,39 +90,38 @@ FILENAME=$DIRNAME.tar.bz2
 CABAL_PLAN=$HOME/.cabal/bin/cabal-plan
 
 function prepare_dist {
-    local ver=$1
-    local dest=$2
-    cp $(find dist-newstyle -type f -name matterhorn | grep $ver) $dest
-    strip $dest/matterhorn
+  local ver=$1
+  local dest=$2
+  cp $(find dist-newstyle -type f -name matterhorn | grep $ver) $dest
+  strip $dest/matterhorn
 
-    cp $ROOT/README.md $dest
-    cp $ROOT/CHANGELOG.md $dest
+  cp $ROOT/README.md $dest
+  cp $ROOT/CHANGELOG.md $dest
 
-    mkdir $dest/docs
-    cp $ROOT/docs/sample-config.ini $dest/docs/
-    cp $ROOT/docs/keybindings.md $dest/docs/
-    cp $ROOT/docs/commands.md $dest/docs/
+  mkdir $dest/docs
+  cp $ROOT/docs/sample-config.ini $dest/docs/
+  cp $ROOT/docs/keybindings.md $dest/docs/
+  cp $ROOT/docs/commands.md $dest/docs/
 
-    cp -r $ROOT/emoji $dest/
-    cp -r $ROOT/syntax $dest/
-    cp -r $ROOT/notification-scripts $dest/
-    cp -r $ROOT/client-scripts $dest/
-    echo $LONG_HEAD > $dest/COMMIT
+  cp -r $ROOT/emoji $dest/
+  cp -r $ROOT/syntax $dest/
+  cp -r $ROOT/notification-scripts $dest/
+  cp -r $ROOT/client-scripts $dest/
+  cp $ROOT/scripts/macos_allow_gatekeeper.sh $dest/
+  echo $LONG_HEAD >$dest/COMMIT
 
-    cd $ROOT && $CABAL_PLAN license-report exe:matterhorn > $dest/COPYRIGHT
+  cd $ROOT && $CABAL_PLAN license-report exe:matterhorn >$dest/COPYRIGHT
 
-    if grep -i gpl $dest/COPYRIGHT >/dev/null
-    then
-        echo "ERROR: $dest/COPYRIGHT indicates that one or more Matterhorn dependencies is GPL-licensed!"
-        exit 1
-    fi
+  if grep -i gpl $dest/COPYRIGHT >/dev/null; then
+    echo "ERROR: $dest/COPYRIGHT indicates that one or more Matterhorn dependencies is GPL-licensed!"
+    exit 1
+  fi
 }
 
 function install_tools {
-    if [ ! -e $CABAL_PLAN ]
-    then
-        cabal install cabal-plan -f license-report
-    fi
+  if [ ! -e $CABAL_PLAN ]; then
+    cabal install cabal-plan -f license-report
+  fi
 }
 
 install_tools
@@ -150,14 +148,14 @@ echo
 
 TMPDIR=$(mktemp -d)
 function cleanup {
-    rm -rf $TMPDIR
+  rm -rf $TMPDIR
 }
 trap cleanup EXIT
 
 # Package the build results into a tarball
 mkdir $TMPDIR/$DIRNAME
 prepare_dist $MHVERSION $TMPDIR/$DIRNAME
-cd $TMPDIR && tar -cj $DIRNAME > $ROOT/$FILENAME
+cd $TMPDIR && tar -cj $DIRNAME >$ROOT/$FILENAME
 
 echo %%%%%%%%%% completed package build %%%%%%%%%%
 echo Version: $MHVERSION

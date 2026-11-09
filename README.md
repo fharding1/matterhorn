@@ -12,14 +12,16 @@ We provide pre-built binary releases for some platforms. Please see the
 release list to download a binary release for your platform that matches
 your server version:
 
-https://github.com/matterhorn-chat/matterhorn/releases
+<https://github.com/matterhorn-chat/matterhorn/releases>
 
 To run Matterhorn, unpack the binary release archive and run the
 `matterhorn` binary within.  Help is available via the `--help` or
-`-h` flag.
+`-h` flag. Mac users may need to run the provided `macos_allow_gatekeeper.sh`
+script to stop Gatekeeper from blocking the binary.
 
-    $ matterhorn --help
-    $ matterhorn
+    ./macos_allow_gatekeeper.sh # mac users only
+    matterhorn --help
+    matterhorn
 
 When you run Matterhorn you'll be prompted for your server URL and
 credentials. To connect, just paste your web client's Mattermost URL
@@ -45,9 +47,9 @@ additional requirements that may apply for your platform:
 
 @3v1n0 maintains a Snap package here:
 
-https://github.com/3v1n0/matterhorn-snap/ ([Snapcraft page](https://snapcraft.io/matterhorn/))
+<https://github.com/3v1n0/matterhorn-snap/> ([Snapcraft page](https://snapcraft.io/matterhorn/))
 
-# Get Help!
+# Get Help
 
 We provide a number of avenues for getting support:
 
@@ -147,21 +149,21 @@ for it, or create a new issue and let us know!
 If you decide to contribute, that's great! Here are some guidelines you
 should consider to make submitting patches easier for all concerned:
 
- - If you are new to Haskell and are unsure how much Haskell you need
+* If you are new to Haskell and are unsure how much Haskell you need
    to know in order to contribute, please see [our list of Haskell
    skills needed](docs/HASKELL.md).
- - Please base all patches against the `develop` branch unless you are
+* Please base all patches against the `develop` branch unless you are
    specifically fixing a bug in a released version, in which case
    `master` is a fine place to start. Please also do this for submodules
    that have a `develop` branch if you need to contribute changes to
    submodules.
- - If you want to take on big things, let's have a design/vision
+* If you want to take on big things, let's have a design/vision
    discussion before you start coding. Create a GitHub issue and we can
    use that as the place to hash things out. We'll be interested to
    discuss any usability / UI, performance, or compatibility issues.
- - Please make changes consistent with the conventions already used in
+* Please make changes consistent with the conventions already used in
    the codebase.
- - We follow a few development practices to support our project and it
+* We follow a few development practices to support our project and it
    helps when contributors are aware of these. Please see
    [our practices document](docs/PRACTICES.md) for more information.
 
